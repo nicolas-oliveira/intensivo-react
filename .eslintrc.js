@@ -21,5 +21,8 @@ module.exports = {
 		'react/prefer-stateless-function': 'off',
 		'react/state-in-constructor': 'off',
 		'no-console': 'off',
+		'jsx-a11y/anchor-is-valid': 'off',
+		'react/prop-types': 'off',
+		'react/static-property-placement': 'off',
 	},
 };
