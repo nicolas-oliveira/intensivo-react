@@ -3,14 +3,17 @@ import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 import api from '../../services/api';
-import Container from '../../components/Container';
+
 import { Form, SubmitButton, List } from './styles';
+
+import Container from '../../components/Container';
 
 export default class Main extends Component {
 	state = {
 		newRepo: '',
 		repositories: [],
 		loading: false,
+		error: false,
 	};
 
 	componentDidMount() {
@@ -33,26 +36,41 @@ export default class Main extends Component {
 	};
 
 	handleSubmit = async (e) => {
-		e.preventDefault();
+		try {
+			e.preventDefault();
 
-		this.setState({ loading: true });
+			const { newRepo, repositories } = this.state;
 
-		const { newRepo, repositories } = this.state;
-		const response = await api.get(`/repos/${newRepo}`);
+			repositories.forEach((name) => {
+				if (name === newRepo) {
+					throw new Error('Repositório duplicado');
+				}
+			});
 
-		const data = {
-			name: response.data.full_name,
-		};
+			this.setState({ loading: true });
 
-		this.setState({
-			repositories: [...repositories, data],
-			newRepo: '',
-			loading: false,
-		});
+			const response = await api.get(`/repos/${newRepo}`);
+
+			const data = {
+				name: response.data.full_name,
+			};
+
+			this.setState({
+				repositories: [...repositories, data],
+				newRepo: '',
+				loading: false,
+				error: false,
+			});
+		} catch {
+			this.setState({
+				loading: false,
+				error: true,
+			});
+		}
 	};
 
 	render() {
-		const { newRepo, repositories, loading } = this.state;
+		const { newRepo, repositories, loading, error } = this.state;
 
 		return (
 			<Container>
@@ -60,7 +78,8 @@ export default class Main extends Component {
 					<FaGithubAlt />
 					Repositorios
 				</h1>
-				<Form onSubmit={this.handleSubmit}>
+				<span>Este repositório já existe </span>
+				<Form onSubmit={this.handleSubmit} error={error}>
 					<input
 						type="text"
 						placeholder="Adicionar repo"

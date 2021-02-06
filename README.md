@@ -1,15 +1,3 @@
-# Comandos usados nesse repositório
+# Intensivo React Janeiro 2021!
 
-```
-yarn add -D typescript
-```
-```
-yarn add express
-```
-```
-yarn add -D @types/express
-```
-Executar o transpilador typescript:
-```
-yarn tsc <dir>
-```
+### Styled components
